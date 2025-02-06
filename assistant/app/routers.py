@@ -1,7 +1,6 @@
 from aiogram import Router
-from aiogram.enums import ParseMode
 from aiogram.filters import CommandStart
-from aiogram.types import Message, ReplyKeyboardMarkup, KeyboardButton
+from aiogram.types import Message
 
 from assistant.app.tg_app import create_user, ask
 from assistant.core.constants import START_MESSAGE

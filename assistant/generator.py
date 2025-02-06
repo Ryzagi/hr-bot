@@ -3,8 +3,8 @@ from typing import Dict, Tuple
 
 from dotenv import load_dotenv
 from langchain_core.load import loads
-from langchain_core.messages import HumanMessage, SystemMessage, AIMessage, convert_to_messages
-from langchain_core.output_parsers import StrOutputParser, PydanticToolsParser
+from langchain_core.messages import HumanMessage, SystemMessage, AIMessage
+from langchain_core.output_parsers import PydanticToolsParser
 from langchain_openai import ChatOpenAI
 
 from assistant.app.data import ModelOutputResponseFormat, CandidateInformation
@@ -13,7 +13,7 @@ from assistant.core.constants import SCRIPT_PROMPT, SYSTEM_PROMPT
 load_dotenv()
 
 
-class AiVeterinarian:
+class HRChatBot:
     def __init__(self, model_name="gpt-4o-mini", max_messages=10):
         """
         Initialize the summarizing chatbot.

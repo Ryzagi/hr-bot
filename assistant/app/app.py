@@ -7,13 +7,13 @@ from loguru import logger
 from assistant.app.data import AppState, UserInput
 from assistant.core.constants import CREATE_USER_ENDPOINT, ASK_ENDPOINT, START_MESSAGE
 from assistant.database.writer import HistoryWriter
-from assistant.generator import AiVeterinarian
+from assistant.generator import HRChatBot
 
 HISTORY_WRITER = HistoryWriter()
 USER_STATUSES = HISTORY_WRITER.load_user_statuses()
 CONVERSATIONS = HISTORY_WRITER.load_user_conversations()
 
-generator = AiVeterinarian()
+hr_bot = HRChatBot()
 
 
 @asynccontextmanager
@@ -55,7 +55,7 @@ async def ask_endpoint(request: UserInput):
     conversation_state = app.state.conversations[user_id]
 
     # Process user input and get updated conversation state
-    updated_conversation, user_stage, user_info = generator.ask(user_text, conversation_state)
+    updated_conversation, user_stage, user_info = hr_bot.ask(user_text, conversation_state)
 
     # Extract the latest bot response
     latest_response = updated_conversation["messages"][-1].content
