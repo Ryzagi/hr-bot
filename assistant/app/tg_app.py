@@ -22,11 +22,11 @@ async def main() -> None:
     await dp.start_polling(bot, polling_timeout=5)
 
 
-async def create_user(user_id: str):
+async def create_user(user_data: dict):
     async with aiohttp.ClientSession() as session:
         async with session.post(
                 f"http://{NETWORK}:8000{CREATE_USER_ENDPOINT}",
-                json={"user_id": user_id}
+                json=user_data
         ) as response:
             if response.status != 200:
                 raise Exception(f"Failed to create user. Status code: {response.status}")
