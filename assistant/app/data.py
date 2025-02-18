@@ -1,3 +1,5 @@
+from typing_extensions import Annotated, TypedDict
+
 from pydantic import BaseModel, Field
 
 
@@ -13,19 +15,19 @@ class ModelOutputResponseFormat(BaseModel):
     stage: int = Field(description="State of the conversation.")
 
 
-class CandidateInformation(BaseModel):
+class CandidateInformation(TypedDict):
     """Candidate information from the conversation."""
-
-    vacancy: str = Field(..., description="Название вакансии")
-    schedule: str = Field(..., description="График работы")
-    full_name: str = Field(..., description="ФИО")
-    date_of_birth: str = Field(..., description="Дата рождения")
-    city: str = Field(..., description="Город")
-    metro: str = Field(..., description="Метро")
-    citizenship: str = Field(..., description="Гражданство")
-    documents: str = Field(..., description="Документы")
-    phone_number: str = Field(..., description="Номер телефона")
-    interview_date: str = Field(..., description="Дата и время интервью")
+    vacancy: Annotated[str, ..., "Название вакансии"]
+    schedule: Annotated[str, ..., "График работы"]
+    full_name: Annotated[str, ..., "ФИО"]
+    date_of_birth: Annotated[str, ..., "Дата рождения"]
+    city: Annotated[str, ..., "Город"]
+    metro: Annotated[str, ..., "Метро"]
+    citizenship: Annotated[str, ..., "Гражданство"]
+    documents: Annotated[str, ..., "Документы"]
+    phone_number: Annotated[str, ..., "Номер телефона"]
+    interview_date: Annotated[str, ..., "Дата интервью"]
+    interview_time: Annotated[str, ..., "Время интервью"]
 
 
 class AppState(BaseModel):

@@ -76,6 +76,8 @@ async def ask_endpoint(request: UserInput):
     app.state.conversations[user_id] = updated_conversation
     app.state.conversations[user_id]["stage"] = user_stage
     print(f"Updated conversation: {updated_conversation}")
+    if user_info:
+        SUPABASE_WRITER.save_user_summary(user_id=user_id, summary=user_info)
     return {"response": latest_response, "user_info": user_info}
 
 

@@ -27,8 +27,10 @@ class HRChatBot:
         self.model = ChatOpenAI(model=model_name, temperature=0, api_key=api_key).with_structured_output(
             ModelOutputResponseFormat)
 
-        self.candidate_output_model = ChatOpenAI(model=model_name, temperature=0, api_key=api_key).bind_tools([CandidateInformation])
-        self.candidate_output_model = self.candidate_output_model | PydanticToolsParser(tools=[CandidateInformation])
+        #self.candidate_output_model = ChatOpenAI(model=model_name, temperature=0, api_key=api_key).bind_tools([CandidateInformation])
+        #self.candidate_output_model = self.candidate_output_model | PydanticToolsParser(tools=CandidateInformation)
+
+        self.candidate_output_model = ChatOpenAI(model=model_name, temperature=0, api_key=api_key).with_structured_output(CandidateInformation)
 
         # Initialize conversation state
         self.messages = []

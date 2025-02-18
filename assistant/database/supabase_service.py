@@ -10,7 +10,8 @@ class SupabaseService:
         self.bucket_name: str = "tasks"
         self._users_table = "users"
         self._conversations_table = "conversations"
-        self._prompts_table = "prompts"
+        self._prompts_table = "hr_scripts"
+        self._summary_table = "user_summaries"
 
     async def add_new_user(self, user_data: dict) -> Dict[str, Union[str, int]]:
         # Add a new user to the "users" table in Supabase, if the user does not already exist
@@ -45,8 +46,8 @@ class SupabaseService:
                 print("Conversations inserted", response)
             return {"message": "Conversations inserted successfully", "status_code": 200}
         except Exception as e:
-            #return {"message": "Failed to insert conversations", "status_code": str(e)}
-            raise e
+            return {"message": "Failed to insert conversations", "status_code": str(e)}
+
 
     def load_conversations(self):
         # Load all conversations from the "conversations" table in Supabase
@@ -55,3 +56,12 @@ class SupabaseService:
             print("Conversations loaded", data)
             return {row["user_id"]: loads(row["conversation"]) for row in data.data}
         return {}
+
+    def save_user_summary(self, user_id: str, summary: dict) -> Dict[str, Union[str, int]]:
+        try:
+            print("User ID", user_id, "Summary", summary)
+            summary["user_id"] = user_id
+            response = self.supabase_client.table(self._summary_table).insert(summary).execute()
+            return {"message": "User summary updated successfully", "status_code": 200}
+        except Exception as e:
+            return {"message": "Failed to update user summary", "status_code": str(e)}
