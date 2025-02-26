@@ -1,10 +1,10 @@
 import os
+from datetime import datetime
 from typing import Dict, Tuple
 
 from dotenv import load_dotenv
 from langchain_core.load import loads
 from langchain_core.messages import HumanMessage, SystemMessage, AIMessage
-from langchain_core.output_parsers import PydanticToolsParser
 from langchain_openai import ChatOpenAI
 
 from assistant.app.data import ModelOutputResponseFormat, CandidateInformation
@@ -108,7 +108,10 @@ class HRChatBot:
             conversation_state["messages"] = user_conversation
 
         if conversation_state.get("stage") == 7:
-            messages_to_send = conversation_state["messages"] + [SystemMessage(content=conversation_state["summary"])]
+            current_date = datetime.now().strftime("%Y-%m-%d")
+            date_system_message = SystemMessage(content=f"Сегодняшняя дата: {current_date}")
+            messages_to_send = (conversation_state["messages"] + [date_system_message] +
+                                [SystemMessage(content=conversation_state["summary"])])
 
             print("Messages: ", messages_to_send)
             print("User conversation: ", conversation_state)

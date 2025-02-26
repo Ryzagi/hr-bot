@@ -5,7 +5,7 @@ import sys
 from aiogram.client.session import aiohttp
 
 from assistant.app import routers
-from assistant.config import TELEGRAM_BOT_TOKEN
+from assistant.config import TELEGRAM_BOT_TOKEN, ADMIN_TG_ID, HR_CHAT_ID
 
 from aiogram import Bot, Dispatcher
 from aiogram.client.default import DefaultBotProperties
@@ -45,9 +45,25 @@ async def ask(user_id: str, user_text: str):
             await asyncio.sleep(0.5)
             response_json = await response.json()
             if response_json.get("user_info"):
+                response_json = response_json['user_info']
                 #await bot.send_message(user_id, text=f"Диалог завершен! Вот информация о кандидате:\n{response_json['user_info']}")
-                await bot.send_message(656996538,
-                                       text=f"Диалог завершен! Вот информация о кандидате:\n{response_json['user_info']}")
+                message_text = (
+                    f"Диалог завершен!\n"
+                    f"📌 Вакансия: {response_json['vacancy']}\n"
+                    f"🗓 График: {response_json['schedule']}\n"
+                    f"👤 ФИО: {response_json['full_name']}\n"
+                    f"🎂 Дата рождения: {response_json['date_of_birth']}\n"
+                    f"📍 Город: {response_json['city']}\n"
+                    f"🚇 Метро: {response_json['metro']}\n"
+                    f"🌍 Гражданство: {response_json['citizenship']}\n"
+                    f"📄 Документы: {response_json['documents']}\n"
+                    f"📞 Телефон: {response_json['phone_number']}\n"
+                    f"🔔 Дата собеседования: {response_json['interview_date']}\n"
+                    f"🕒 Время собеседования: {response_json['interview_time']}"
+                )
+                await bot.send_message(ADMIN_TG_ID,
+                                       text=message_text)
+                await bot.send_message(HR_CHAT_ID, text=message_text)
             return response_json
 
 
