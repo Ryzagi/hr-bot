@@ -11,6 +11,7 @@ from assistant.app.data import AppState, UserInput
 from assistant.core.constants import CREATE_USER_ENDPOINT, ASK_ENDPOINT, START_MESSAGE
 from assistant.generator import HRChatBot
 from assistant.database.supabase_service import SupabaseService
+from assistant.notion_service import NotionParser
 
 load_dotenv()
 
@@ -22,6 +23,7 @@ load_dotenv()
 hr_bot = HRChatBot()
 SUPABASE_WRITER = SupabaseService(supabase_url=os.getenv("SUPABASE_URL"), supabase_key=os.getenv("SUPABASE_KEY"))
 CONVERSATIONS = SUPABASE_WRITER.load_conversations()
+NOTION_SERVICE = NotionParser(api_key=os.getenv("NOTION_API_KEY"), page_id=os.getenv("NOTION_ROOT_PAGE_ID"))
 
 
 @asynccontextmanager
@@ -79,6 +81,17 @@ async def ask_endpoint(request: UserInput):
     if user_info:
         SUPABASE_WRITER.save_user_summary(user_id=user_id, summary=user_info)
     return {"response": latest_response, "user_info": user_info}
+
+
+@app.post("/notion")
+async def notion_endpoint(request: dict):
+    user_id = request.get("user_id")
+
+    # Fetch notion data
+    notion_data = NOTION_SERVICE.fetch_page_recursively(os.getenv("NOTION_ROOT_PAGE_ID"))
+
+    SUPABASE_WRITER.save_hr_scripts(notion_data)
+    return {"response": notion_data}
 
 
 if __name__ == "__main__":

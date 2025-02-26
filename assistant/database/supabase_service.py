@@ -10,7 +10,7 @@ class SupabaseService:
         self.bucket_name: str = "tasks"
         self._users_table = "users"
         self._conversations_table = "conversations"
-        self._prompts_table = "hr_scripts"
+        self._hr_scripts_prompts_table = "hr_scripts"
         self._summary_table = "user_summaries"
 
     async def add_new_user(self, user_data: dict) -> Dict[str, Union[str, int]]:
@@ -65,3 +65,11 @@ class SupabaseService:
             return {"message": "User summary updated successfully", "status_code": 200}
         except Exception as e:
             return {"message": "Failed to update user summary", "status_code": str(e)}
+
+    def save_hr_scripts(self, parsed_scripts: list) -> Dict[str, Union[str, int]]:
+        try:
+            for script in parsed_scripts:
+                response = self.supabase_client.table(self._hr_scripts_prompts_table).insert(script).execute()
+            return {"message": "HR scripts inserted successfully", "status_code": 200}
+        except Exception as e:
+            return {"message": "Failed to insert HR scripts", "status_code": str(e)}
