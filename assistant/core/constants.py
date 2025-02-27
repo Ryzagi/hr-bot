@@ -235,7 +235,7 @@ htpsllvkusvll.ru/prvacy/
 - Номер телефона
 - Дата и время интервью
 """
-NETWORK = "localhost"
+NETWORK = "app"
 
 CREATE_USER_ENDPOINT = "/api/v1/ai-vet/create_user"
 
