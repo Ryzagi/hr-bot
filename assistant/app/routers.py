@@ -4,7 +4,7 @@ from aiogram import Router
 from aiogram.filters import CommandStart
 from aiogram.types import Message
 
-from assistant.app.tg_app import create_user, ask
+from assistant.app.tg_app import create_user_tg, ask
 from assistant.core.constants import START_MESSAGE
 
 router = Router()
@@ -21,7 +21,7 @@ async def start(message: Message):
         "is_premium": message.from_user.is_premium,
         "is_bot": message.from_user.is_bot
     }
-    await create_user(data)
+    await create_user_tg(data)
     await message.answer(START_MESSAGE)
 
 def escape_markdown(text: str) -> str:
