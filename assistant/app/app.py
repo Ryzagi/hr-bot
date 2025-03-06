@@ -10,7 +10,6 @@ from loguru import logger
 from starlette.requests import Request
 
 from assistant.app.data import AppState, UserInput
-from assistant.app.tg_app import send_user_info
 from assistant.core.constants import CREATE_USER_ENDPOINT, ASK_ENDPOINT, START_MESSAGE
 from assistant.generator import HRChatBot
 from assistant.database.supabase_service import SupabaseService
@@ -116,6 +115,7 @@ async def notion_endpoint(request: dict):
 
 @app.post("/wazzup-webhook")
 async def wazzup_webhook(request: Request):
+    from assistant.app.tg_app import send_user_info
     try:
         payload = await request.json()
         logger.info(f"Incoming Wazzup message: {payload}")
