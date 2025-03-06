@@ -4,7 +4,6 @@ from aiogram import Router
 from aiogram.filters import CommandStart
 from aiogram.types import Message
 
-from assistant.app.tg_app import create_user_tg, ask
 from assistant.core.constants import START_MESSAGE
 
 router = Router()
@@ -12,6 +11,7 @@ router = Router()
 
 @router.message(CommandStart())
 async def start(message: Message):
+    from assistant.app.tg_app import create_user_tg
     data = {
         "user_id": str(message.from_user.id),
         "tg_username": message.from_user.username,
@@ -61,6 +61,7 @@ async def send_message(message, text):
 async def handle_query_command(message: Message):
     user_id = str(message.from_user.id)
     try:
+        from assistant.app.tg_app import ask
         response = await ask(user_id, message.text)
         text = response["response"]
         await send_message(message, text)
