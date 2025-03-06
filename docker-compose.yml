@@ -4,9 +4,7 @@ version: "0.1"
 services:
   app:
     build: .
-    command: uvicorn assistant.app.app:app --host 0.0.0.0 --port 8000
-    ports:
-      - "8000:8000"
+    command: uvicorn assistant.app.app:app --host 0.0.0.0 --port 9000
     env_file: assistant/.env
     volumes:
       - .:/app

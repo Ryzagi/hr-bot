@@ -25,7 +25,7 @@ async def main() -> None:
 async def create_user(user_data: dict):
     async with aiohttp.ClientSession() as session:
         async with session.post(
-                f"http://{NETWORK}:8000{CREATE_USER_ENDPOINT}",
+                f"http://{NETWORK}:9000{CREATE_USER_ENDPOINT}",
                 json=user_data
         ) as response:
             if response.status != 200:
@@ -36,7 +36,7 @@ async def create_user(user_data: dict):
 async def ask(user_id: str, user_text: str):
     async with aiohttp.ClientSession() as session:
         async with session.post(
-                f"http://{NETWORK}:8000{ASK_ENDPOINT}",
+                f"http://{NETWORK}:9000{ASK_ENDPOINT}",
                 json={"user_id": user_id, "user_text": user_text}
         ) as response:
             if response.status != 200:
