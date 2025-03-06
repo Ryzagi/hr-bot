@@ -22,7 +22,7 @@ async def main() -> None:
     await dp.start_polling(bot, polling_timeout=5)
 
 
-async def create_user(user_data: dict):
+async def create_user_tg(user_data: dict):
     async with aiohttp.ClientSession() as session:
         async with session.post(
                 f"http://{NETWORK}:9000{CREATE_USER_ENDPOINT}",
