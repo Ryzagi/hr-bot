@@ -46,21 +46,21 @@ async def ask(user_id: str, user_text: str):
             response_json = await response.json()
             print(response_json)
             if response_json.get("user_info"):
-                user_info = response_json['user_info']
-                message_text = (
-                    f"Диалог завершен!\n"
-                    f"📌 Вакансия: {user_info['vacancy']}\n"
-                    f"👤 ФИО: {user_info['full_name']}\n"
-                    f"🎂 Дата рождения: {user_info['date_of_birth']}\n"
-                    f"📍 Город: {user_info['city']}\n"
-                    f"🚇 Метро: {user_info['metro']}\n"
-                    f"🌍 Гражданство: {user_info['citizenship']}\n"
-                    f"📞 Телефон: {user_info['phone_number']}\n"
-                )
-                await bot.send_message(ADMIN_TG_ID,
-                                       text=message_text)
-                await bot.send_message(HR_CHAT_ID, text=message_text)
+                await send_user_info(response_json["user_info"])
             return response_json
+
+async def send_user_info(user_info: dict):
+    message_text = (
+        f"Диалог завершен!\n"
+        f"📌 Вакансия: {user_info['vacancy']}\n"
+        f"👤 ФИО: {user_info['full_name']}\n"
+        f"🎂 Дата рождения: {user_info['date_of_birth']}\n"
+        f"📍 Город: {user_info['city']}\n"
+        f"🚇 Метро: {user_info['metro']}\n"
+        f"🌍 Гражданство: {user_info['citizenship']}\n"
+        f"📞 Телефон: {user_info['phone_number']}\n"
+    )
+    await bot.send_message(HR_CHAT_ID, text=message_text)
 
 
 if __name__ == "__main__":

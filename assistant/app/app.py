@@ -10,6 +10,7 @@ from loguru import logger
 from starlette.requests import Request
 
 from assistant.app.data import AppState, UserInput
+from assistant.app.tg_app import send_user_info
 from assistant.core.constants import CREATE_USER_ENDPOINT, ASK_ENDPOINT, START_MESSAGE
 from assistant.generator import HRChatBot
 from assistant.database.supabase_service import SupabaseService
@@ -121,8 +122,12 @@ async def wazzup_webhook(request: Request):
 
         messages = payload.get("messages", [])
         for message in messages:
-            user_id = message.get("chat_id")
+            user_id = message.get("chatId")
             user_text = message.get("text")
+            channel_id = message.get("channelId")
+
+            if user_id not in app.state.conversations:
+                await create_user({"user_id": user_id})
 
             if user_id and user_text:
                 updated_conversation, user_stage, user_info = hr_bot.ask(user_text, app.state.conversations[user_id])
@@ -132,29 +137,40 @@ async def wazzup_webhook(request: Request):
                 app.state.conversations[user_id]["stage"] = user_stage
 
                 bot_response = updated_conversation["messages"][-1].content
-                send_wazzup_message(user_id, bot_response)
+                send_wazzup_message(user_id, bot_response, channel_id)
 
                 if user_info:
                     SUPABASE_WRITER.save_user_summary(user_id=user_id, summary=user_info)
+                    await send_user_info(user_info)
 
         return {"status": "received"}
     except Exception as e:
         logger.error(f"Webhook error: {e}")
         return {"status": "error"}
 
-def send_wazzup_message(chat_id: str, text: str):
+def send_wazzup_message(user_id: str, message: str, channel_id: str):
+    url = "https://api.wazzup24.com/v3/message"  # URL for sending messages via Wazzup
     headers = {
-        "Authorization": f"Bearer {os.getenv('WAZZUP_TOKEN')}",
-        "Content-Type": "application/json"
-    }
-    payload = {
-        "channel_id": os.getenv("WAZZUP_CHANNEL_ID"),
-        "chat_id": chat_id,
-        "text": text
+        "Authorization": "Bearer " + os.getenv("WAZZUP_TOKEN"),
+        "Content-Type": "application/json",
     }
 
-    response = requests.post(os.getenv("WAZZUP_API_URL"), headers=headers, json=payload)
-    logger.info(f"Message sent to {chat_id}: {response.status_code}, {response.json()}")
+    payload = {
+        "channelId": channel_id,  # The channelId from the incoming message
+        "chatId": user_id,  # The chatId from the incoming message (phone number or user identifier)
+        "chatType": "whatsapp",  # The chat type (WhatsApp in this case)
+        "text": message,  # The message content (response from your bot)
+    }
+
+    try:
+        response = requests.post(url, json=payload, headers=headers)
+        if response.status_code == 200:
+            logger.info(f"Successfully sent message to {user_id} via WhatsApp")
+        else:
+            logger.error(f"Failed to send message: {response.status_code} - {response.text}")
+    except Exception as e:
+        logger.error(f"Error while sending message: {e}")
+
 
 
 if __name__ == "__main__":
