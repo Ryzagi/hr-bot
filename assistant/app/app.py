@@ -49,9 +49,10 @@ async def lifespan(app: FastAPI):
     app.state = AppState()
     app.state.conversations = CONVERSATIONS
 
-    print("CONVERSATIONS", app.state.conversations)
-
-    register_wazzup_webhook()  # Register webhook on startup
+    try:
+        register_wazzup_webhook()  # Register webhook on startup
+    except Exception as e:
+        logger.error(f"Failed to register Wazzup webhook: {e}")
 
     yield  # Application is running
 

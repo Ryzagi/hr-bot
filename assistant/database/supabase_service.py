@@ -53,7 +53,6 @@ class SupabaseService:
         # Load all conversations from the "conversations" table in Supabase
         data = self.supabase_client.table(self._conversations_table).select("user_id, conversation").execute()
         if data.data:
-            print("Conversations loaded", data)
             return {row["user_id"]: loads(row["conversation"]) for row in data.data}
         return {}
 
