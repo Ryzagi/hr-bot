@@ -15,7 +15,7 @@ class ModelOutputResponseFormat(BaseModel):
     stage: int = Field(description="State of the conversation.")
 
 
-class CandidateInformation(TypedDict):
+class CandidateInformationOld(TypedDict):
     """Candidate information from the conversation."""
     vacancy: Annotated[str, ..., "Название вакансии"]
     schedule: Annotated[str, ..., "График работы"]
@@ -28,6 +28,16 @@ class CandidateInformation(TypedDict):
     phone_number: Annotated[str, ..., "Номер телефона"]
     interview_date: Annotated[str, ..., "Дата интервью"]
     interview_time: Annotated[str, ..., "Время интервью"]
+
+class CandidateInformation(TypedDict):
+    """Candidate information from the conversation."""
+    vacancy: Annotated[str, ..., "Название вакансии"]
+    full_name: Annotated[str, ..., "ФИО"]
+    date_of_birth: Annotated[str, ..., "Дата рождения, формат: ДД.ММ.ГГГГ"]
+    city: Annotated[str, ..., "Город"]
+    metro: Annotated[str, ..., "Метро"]
+    citizenship: Annotated[str, ..., "Гражданство"]
+    phone_number: Annotated[str, ..., "Номер телефона"]
 
 
 class AppState(BaseModel):

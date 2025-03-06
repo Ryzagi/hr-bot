@@ -44,22 +44,18 @@ async def ask(user_id: str, user_text: str):
             await bot.send_chat_action(user_id, "typing")
             await asyncio.sleep(0.5)
             response_json = await response.json()
+            print(response_json)
             if response_json.get("user_info"):
-                response_json = response_json['user_info']
-                #await bot.send_message(user_id, text=f"Диалог завершен! Вот информация о кандидате:\n{response_json['user_info']}")
+                user_info = response_json['user_info']
                 message_text = (
                     f"Диалог завершен!\n"
-                    f"📌 Вакансия: {response_json['vacancy']}\n"
-                    f"🗓 График: {response_json['schedule']}\n"
-                    f"👤 ФИО: {response_json['full_name']}\n"
-                    f"🎂 Дата рождения: {response_json['date_of_birth']}\n"
-                    f"📍 Город: {response_json['city']}\n"
-                    f"🚇 Метро: {response_json['metro']}\n"
-                    f"🌍 Гражданство: {response_json['citizenship']}\n"
-                    f"📄 Документы: {response_json['documents']}\n"
-                    f"📞 Телефон: {response_json['phone_number']}\n"
-                    f"🔔 Дата собеседования: {response_json['interview_date']}\n"
-                    f"🕒 Время собеседования: {response_json['interview_time']}"
+                    f"📌 Вакансия: {user_info['vacancy']}\n"
+                    f"👤 ФИО: {user_info['full_name']}\n"
+                    f"🎂 Дата рождения: {user_info['date_of_birth']}\n"
+                    f"📍 Город: {user_info['city']}\n"
+                    f"🚇 Метро: {user_info['metro']}\n"
+                    f"🌍 Гражданство: {user_info['citizenship']}\n"
+                    f"📞 Телефон: {user_info['phone_number']}\n"
                 )
                 await bot.send_message(ADMIN_TG_ID,
                                        text=message_text)

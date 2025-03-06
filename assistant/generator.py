@@ -8,7 +8,7 @@ from langchain_core.messages import HumanMessage, SystemMessage, AIMessage
 from langchain_openai import ChatOpenAI
 
 from assistant.app.data import ModelOutputResponseFormat, CandidateInformation
-from assistant.core.constants import SCRIPT_PROMPT, SYSTEM_PROMPT
+from assistant.core.constants import SCRIPT_PROMPT, SYSTEM_PROMPT, SUMMARY_STAGE_CREATION
 
 load_dotenv()
 
@@ -86,7 +86,7 @@ class HRChatBot:
 
         # Insert summary if available
         if summary:
-            summary_system_message = SystemMessage(content=f"Summary of conversation so far: {summary}")
+            summary_system_message = SystemMessage(content=f"Текущее саммари диалога: {summary}")
             messages_to_send = self._system_prompt + self._script_prompt + [summary_system_message] + user_conversation
         else:
             messages_to_send = self._system_prompt + self._script_prompt + self._script_prompt + user_conversation
@@ -107,7 +107,7 @@ class HRChatBot:
         else:
             conversation_state["messages"] = user_conversation
 
-        if conversation_state.get("stage") == 7:
+        if conversation_state.get("stage") == SUMMARY_STAGE_CREATION:
             current_date = datetime.now().strftime("%Y-%m-%d")
             date_system_message = SystemMessage(content=f"Сегодняшняя дата: {current_date}")
             messages_to_send = (conversation_state["messages"] + [date_system_message] +
