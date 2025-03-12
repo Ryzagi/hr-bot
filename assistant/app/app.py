@@ -10,7 +10,7 @@ from loguru import logger
 from starlette.requests import Request
 from assistant.app.handlers import send_user_info
 from assistant.app.data import AppState, UserInput
-from assistant.core.constants import CREATE_USER_ENDPOINT, ASK_ENDPOINT, START_MESSAGE
+from assistant.core.constants import CREATE_USER_ENDPOINT, ASK_ENDPOINT, START_MESSAGE, WAZZAP_ENDPOINT
 from assistant.generator import HRChatBot
 from assistant.database.supabase_service import SupabaseService
 from assistant.notion_service import NotionParser
@@ -116,7 +116,7 @@ async def notion_endpoint(request: dict):
     return {"response": notion_data}
 
 
-@app.post("/wazzup-webhook")
+@app.post(WAZZAP_ENDPOINT)
 async def wazzup_webhook(request: Request):
     try:
         payload = await request.json()
@@ -124,16 +124,20 @@ async def wazzup_webhook(request: Request):
 
         messages = payload.get("messages", [])
         for message in messages:
-            # Skip if message is from the bot (messageFrom is "business")
-            if message.get("messageFrom") == "business":
+            # Skip if message is from bot or is an echo
+            if message.get("messageFrom") == "business" or message.get("isEcho"):
+                continue
+
+            # Only process text messages
+            if message.get("type") != "text":
                 continue
 
             user_id = message.get("chatId")
             user_text = message.get("text")
             channel_id = message.get("channelId")
 
-            # Only process messages from clients (messageFrom is "client")
-            if user_id and user_text and message.get("messageFrom") == "client":
+            # Process valid text messages
+            if user_id and user_text:
                 if user_id not in app.state.conversations:
                     await create_user({"user_id": user_id})
 

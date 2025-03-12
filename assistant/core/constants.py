@@ -124,9 +124,11 @@ SCRIPT_PROMPT = """
 """
 NETWORK = "app"
 
-CREATE_USER_ENDPOINT = "/api/v1/ai-vet/create_user"
+CREATE_USER_ENDPOINT = "/api/v1/hr-bot/create_user"
 
-ASK_ENDPOINT = "/api/v1/ai-vet/ask"
+ASK_ENDPOINT = "/api/v1/hr-bot/ask"
+
+WAZZAP_ENDPOINT = "/api/v1/hr-bot/wazzup-webhook"
 
 CONVERSATIONS_DIRECTORY = Path(__file__).parent.parent.parent / "database" / "saved_conversations"
 
