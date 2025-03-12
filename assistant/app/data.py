@@ -29,8 +29,10 @@ class CandidateInformationOld(TypedDict):
     interview_date: Annotated[str, ..., "Дата интервью"]
     interview_time: Annotated[str, ..., "Время интервью"]
 
+
 class CandidateInformation(TypedDict):
     """Candidate information from the conversation."""
+    filled_before: Annotated[bool, ..., "Заполнено ранее: да/нет"]
     vacancy: Annotated[str, ..., "Название вакансии"]
     full_name: Annotated[str, ..., "ФИО"]
     date_of_birth: Annotated[str, ..., "Дата рождения, формат: ДД.ММ.ГГГГ"]

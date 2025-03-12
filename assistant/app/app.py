@@ -8,7 +8,7 @@ from contextlib import asynccontextmanager
 from langchain_core.messages import AIMessage
 from loguru import logger
 from starlette.requests import Request
-from assistant.app.tg_app import send_user_info
+from assistant.app.handlers import send_user_info
 from assistant.app.data import AppState, UserInput
 from assistant.core.constants import CREATE_USER_ENDPOINT, ASK_ENDPOINT, START_MESSAGE
 from assistant.generator import HRChatBot
@@ -27,6 +27,7 @@ SUPABASE_WRITER = SupabaseService(supabase_url=os.getenv("SUPABASE_URL"), supaba
 CONVERSATIONS = SUPABASE_WRITER.load_conversations()
 NOTION_SERVICE = NotionParser(api_key=os.getenv("NOTION_API_KEY"), page_id=os.getenv("NOTION_ROOT_PAGE_ID"))
 
+
 def register_wazzup_webhook():
     url = "https://api.wazzup24.com/v3/webhooks"
     headers = {
@@ -41,6 +42,7 @@ def register_wazzup_webhook():
     }
     response = requests.patch(url, headers=headers, json=payload)
     logger.info(f"Wazzup Webhook Registration: {response.status_code}, {response.json()}")
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -116,7 +118,6 @@ async def notion_endpoint(request: dict):
 
 @app.post("/wazzup-webhook")
 async def wazzup_webhook(request: Request):
-
     try:
         payload = await request.json()
         logger.info(f"Incoming Wazzup message: {payload}")
@@ -149,6 +150,7 @@ async def wazzup_webhook(request: Request):
         logger.error(f"Webhook error: {e}")
         return {"status": "error"}
 
+
 def send_wazzup_message(user_id: str, message: str, channel_id: str):
     url = "https://api.wazzup24.com/v3/message"  # URL for sending messages via Wazzup
     headers = {
@@ -171,7 +173,6 @@ def send_wazzup_message(user_id: str, message: str, channel_id: str):
             logger.error(f"Failed to send message: {response.status_code} - {response.text}")
     except Exception as e:
         logger.error(f"Error while sending message: {e}")
-
 
 
 if __name__ == "__main__":
