@@ -1,6 +1,7 @@
 import os
 
 import requests
+from aiogram import Bot
 from dotenv import load_dotenv
 from fastapi import FastAPI
 from contextlib import asynccontextmanager
@@ -10,6 +11,7 @@ from loguru import logger
 from starlette.requests import Request
 from assistant.app.handlers import send_user_info
 from assistant.app.data import AppState, UserInput
+from assistant.config import TELEGRAM_BOT_TOKEN
 from assistant.core.constants import CREATE_USER_ENDPOINT, ASK_ENDPOINT, START_MESSAGE, WAZZAP_ENDPOINT
 from assistant.generator import HRChatBot
 from assistant.database.supabase_service import SupabaseService
@@ -21,6 +23,7 @@ load_dotenv()
 #USER_STATUSES = HISTORY_WRITER.load_user_statuses()
 #CONVERSATIONS = HISTORY_WRITER.load_user_conversations()
 
+telegram_bot = Bot(token=TELEGRAM_BOT_TOKEN)
 
 hr_bot = HRChatBot()
 SUPABASE_WRITER = SupabaseService(supabase_url=os.getenv("SUPABASE_URL"), supabase_key=os.getenv("SUPABASE_KEY"))
@@ -152,7 +155,7 @@ async def wazzup_webhook(request: Request):
 
                 if user_info:
                     SUPABASE_WRITER.save_user_summary(user_id=user_id, summary=user_info)
-                    await send_user_info(user_info)
+                    await send_user_info(telegram_bot, user_info)
 
         return {"status": "received"}
     except Exception as e:
