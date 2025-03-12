@@ -124,14 +124,19 @@ async def wazzup_webhook(request: Request):
 
         messages = payload.get("messages", [])
         for message in messages:
+            # Skip if message is from the bot (messageFrom is "business")
+            if message.get("messageFrom") == "business":
+                continue
+
             user_id = message.get("chatId")
             user_text = message.get("text")
             channel_id = message.get("channelId")
 
-            if user_id not in app.state.conversations:
-                await create_user({"user_id": user_id})
+            # Only process messages from clients (messageFrom is "client")
+            if user_id and user_text and message.get("messageFrom") == "client":
+                if user_id not in app.state.conversations:
+                    await create_user({"user_id": user_id})
 
-            if user_id and user_text:
                 updated_conversation, user_stage, user_info = hr_bot.ask(user_text, app.state.conversations[user_id])
 
                 # Save the conversation
