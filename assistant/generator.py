@@ -4,11 +4,12 @@ from typing import Dict, Tuple
 
 from dotenv import load_dotenv
 from langchain_core.load import loads
-from langchain_core.messages import HumanMessage, SystemMessage, AIMessage
+from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
 from langchain_openai import ChatOpenAI
 
-from assistant.app.data import ModelOutputResponseFormat, CandidateInformation
-from assistant.core.constants import SCRIPT_PROMPT, SYSTEM_PROMPT, SUMMARY_PARAMS
+from assistant.app.data import CandidateInformation, ModelOutputResponseFormat
+from assistant.core.constants import (SCRIPT_PROMPT, SUMMARY_PARAMS,
+                                      SYSTEM_PROMPT)
 
 load_dotenv()
 
@@ -22,13 +23,16 @@ class HRChatBot:
             model_name (str): The OpenAI model to use.
             max_messages (int): Number of messages before summarizing.
         """
-        self.model = ChatOpenAI(model=model_name, temperature=0, api_key=api_key).with_structured_output(
-            ModelOutputResponseFormat)
+        self.model = ChatOpenAI(
+            model=model_name, temperature=0, api_key=api_key
+        ).with_structured_output(ModelOutputResponseFormat)
 
-        #self.candidate_output_model = ChatOpenAI(model=model_name, temperature=0, api_key=api_key).bind_tools([CandidateInformation])
-        #self.candidate_output_model = self.candidate_output_model | PydanticToolsParser(tools=CandidateInformation)
+        # self.candidate_output_model = ChatOpenAI(model=model_name, temperature=0, api_key=api_key).bind_tools([CandidateInformation])
+        # self.candidate_output_model = self.candidate_output_model | PydanticToolsParser(tools=CandidateInformation)
 
-        self.candidate_output_model = ChatOpenAI(model=model_name, temperature=0, api_key=api_key).with_structured_output(CandidateInformation)
+        self.candidate_output_model = ChatOpenAI(
+            model=model_name, temperature=0, api_key=api_key
+        ).with_structured_output(CandidateInformation)
 
         # Initialize conversation state
         self.messages = []
@@ -74,7 +78,9 @@ class HRChatBot:
         print("TYpe of conversation_state", type(conversation_state))
         # Extract messages and summary
         if isinstance(conversation_state, str):
-            conversation_state = loads(conversation_state)  # Convert JSON string to dictionary
+            conversation_state = loads(
+                conversation_state
+            )  # Convert JSON string to dictionary
         print(conversation_state, type(conversation_state))
         user_conversation = conversation_state["messages"]
         summary = conversation_state.get("summary", "")
@@ -84,10 +90,22 @@ class HRChatBot:
 
         # Insert summary if available
         if summary:
-            summary_system_message = SystemMessage(content=f"Текущее саммари диалога: {summary}")
-            messages_to_send = self._system_prompt + self._script_prompt + [summary_system_message] + user_conversation
+            summary_system_message = SystemMessage(
+                content=f"Текущее саммари диалога: {summary}"
+            )
+            messages_to_send = (
+                self._system_prompt
+                + self._script_prompt
+                + [summary_system_message]
+                + user_conversation
+            )
         else:
-            messages_to_send = self._system_prompt + self._script_prompt + self._script_prompt + user_conversation
+            messages_to_send = (
+                self._system_prompt
+                + self._script_prompt
+                + self._script_prompt
+                + user_conversation
+            )
 
         response = self.model.invoke(messages_to_send)
         print(response.content)
@@ -101,15 +119,22 @@ class HRChatBot:
             self.summary = summary  # Preserve existing summary
             self._summarize_conversation()
             conversation_state["summary"] = self.summary  # Update the summary
-            conversation_state["messages"] = self.messages[-2:]  # Keep only the last two messages
+            conversation_state["messages"] = self.messages[
+                -2:
+            ]  # Keep only the last two messages
         else:
             conversation_state["messages"] = user_conversation
 
         if conversation_state.get("stage") == SUMMARY_PARAMS["summary_stage_creation"]:
             current_date = datetime.now().strftime("%Y-%m-%d")
-            date_system_message = SystemMessage(content=f"Сегодняшняя дата: {current_date}")
-            messages_to_send = (conversation_state["messages"] + [date_system_message] +
-                                [SystemMessage(content=conversation_state["summary"])])
+            date_system_message = SystemMessage(
+                content=f"Сегодняшняя дата: {current_date}"
+            )
+            messages_to_send = (
+                conversation_state["messages"]
+                + [date_system_message]
+                + [SystemMessage(content=conversation_state["summary"])]
+            )
 
             print("Messages: ", messages_to_send)
             print("User conversation: ", conversation_state)

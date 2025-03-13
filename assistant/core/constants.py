@@ -146,9 +146,13 @@ GET_CONVERSATIONS_ENDPOINT = "/api/v1/hr-bot/get_conversations"
 
 WAZZAP_ENDPOINT = "/wazzup-webhook"
 
-CONVERSATIONS_DIRECTORY = Path(__file__).parent.parent.parent / "database" / "saved_conversations"
+CONVERSATIONS_DIRECTORY = (
+    Path(__file__).parent.parent.parent / "database" / "saved_conversations"
+)
 
-USER_STATUSES_DIRECTORY = Path(__file__).parent.parent.parent / "database" / "saved_user_statuses"
+USER_STATUSES_DIRECTORY = (
+    Path(__file__).parent.parent.parent / "database" / "saved_user_statuses"
+)
 
 SUMMARY_STAGE_CREATION = 2
 
@@ -169,5 +173,5 @@ SUMMARY_PARAMS = {
         "📞 Телефон: {phone_number}\n"
         "📲 Мессенджер: {messenger}\n"
     ),
-    "summary_stage_creation": 2
+    "summary_stage_creation": 2,
 }

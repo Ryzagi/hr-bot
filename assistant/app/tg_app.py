@@ -1,13 +1,17 @@
 import asyncio
 import logging
 import sys
+
 from aiogram import Bot, Dispatcher
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
-from assistant.config import TELEGRAM_BOT_TOKEN
-from assistant.app import routers
 
-bot = Bot(token=TELEGRAM_BOT_TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
+from assistant.app import routers
+from assistant.config import TELEGRAM_BOT_TOKEN
+
+bot = Bot(
+    token=TELEGRAM_BOT_TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML)
+)
 
 
 async def main() -> None:

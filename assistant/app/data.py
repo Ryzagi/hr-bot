@@ -1,6 +1,5 @@
-from typing_extensions import Annotated, TypedDict
-
 from pydantic import BaseModel, Field
+from typing_extensions import Annotated, TypedDict
 
 
 class UserInput(BaseModel):
@@ -17,6 +16,7 @@ class ModelOutputResponseFormat(BaseModel):
 
 class CandidateInformationOld(TypedDict):
     """Candidate information from the conversation."""
+
     vacancy: Annotated[str, ..., "Название вакансии"]
     schedule: Annotated[str, ..., "График работы"]
     full_name: Annotated[str, ..., "ФИО"]
@@ -32,6 +32,7 @@ class CandidateInformationOld(TypedDict):
 
 class CandidateInformation(TypedDict):
     """Candidate information from the conversation."""
+
     filled_before: Annotated[bool, ..., "Заполнено ранее: 'да' или 'нет'"]
     vacancy: Annotated[str, ..., "Название вакансии"]
     full_name: Annotated[str, ..., "ФИО"]

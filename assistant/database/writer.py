@@ -5,7 +5,8 @@ from typing import Dict
 
 from langchain_core.load import dumps
 
-from assistant.core.constants import CONVERSATIONS_DIRECTORY, USER_STATUSES_DIRECTORY
+from assistant.core.constants import (CONVERSATIONS_DIRECTORY,
+                                      USER_STATUSES_DIRECTORY)
 
 
 class HistoryWriter:
@@ -81,7 +82,9 @@ class HistoryWriter:
         """Save all user conversations to JSON files."""
         for user_id, conversation in conversations.items():
             # Serialize the conversation dictionary to a JSON-formatted string
-            conversation_json = dumps(conversation, ensure_ascii=False, indent=4, pretty=True)
+            conversation_json = dumps(
+                conversation, ensure_ascii=False, indent=4, pretty=True
+            )
             self.save_user_conversation(user_id, conversation_json)
 
     def save_user_statuses(self, statuses: dict) -> None:
@@ -98,5 +101,5 @@ class HistoryWriter:
         # Create empty JSON files with user_id as the key
         with open(conversation_file, "w", encoding="utf-8") as file:
             json.dump({user_id: {"messages": [], "summary": "", "stage": ""}}, file)
-        with open(status_file, "w",encoding="utf-8") as file:
+        with open(status_file, "w", encoding="utf-8") as file:
             json.dump({user_id: {"role": "", "animal": ""}}, file)

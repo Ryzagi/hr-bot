@@ -1,14 +1,12 @@
+import json
 import re
 
 from aiogram import Router
-from aiogram.filters import CommandStart
-from aiogram.types import Message
+from aiogram.filters import Command, CommandStart
+from aiogram.types import FSInputFile, Message
 
+from assistant.app.handlers import ask, create_user_tg, get_conversations
 from assistant.core.constants import START_MESSAGE
-from assistant.app.handlers import create_user_tg, ask, get_conversations
-import json
-from aiogram.filters import Command
-from aiogram.types import FSInputFile
 
 router = Router()
 
@@ -22,7 +20,7 @@ async def start(message: Message):
         "last_name": message.from_user.last_name,
         "language_code": message.from_user.language_code,
         "is_premium": message.from_user.is_premium,
-        "is_bot": message.from_user.is_bot
+        "is_bot": message.from_user.is_bot,
     }
     await create_user_tg(data)
     await message.answer(START_MESSAGE)
@@ -49,14 +47,18 @@ async def send_message(message, text):
         # Detect and escape text if Markdown is found
         if detect_markdown(text):
             escaped_text = escape_markdown(text)
-            await message.answer(escaped_text, parse_mode="MarkdownV2", disable_web_page_preview=False)
+            await message.answer(
+                escaped_text, parse_mode="MarkdownV2", disable_web_page_preview=False
+            )
         else:
             await message.answer(text)
     except Exception as e:
         print(f"MarkdownV2 failed: {e}")
         # Fallback to HTML
         try:
-            await message.answer(text, parse_mode="HTML", disable_web_page_preview=False)
+            await message.answer(
+                text, parse_mode="HTML", disable_web_page_preview=False
+            )
         except Exception as e:
             print(f"HTML failed: {e}")
             await message.answer(text)  # Plain text fallback

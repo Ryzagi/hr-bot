@@ -1,6 +1,7 @@
 import os
-import requests
 import time
+
+import requests
 from dotenv import load_dotenv
 
 
@@ -23,7 +24,9 @@ class NotionParser:
         if response.status_code == 200:
             return response.json()
         else:
-            print(f"Error fetching page {page_id}: {response.status_code}, {response.text}")
+            print(
+                f"Error fetching page {page_id}: {response.status_code}, {response.text}"
+            )
             return None
 
     def parse_blocks(self, blocks, company_name="", current_page_id=None):
@@ -55,7 +58,9 @@ class NotionParser:
                 print(f"Fetching child page: {child_company_name} ({child_page_id})")
 
                 # Recursively fetch child pages
-                child_content = self.fetch_page_recursively(child_page_id, child_company_name)
+                child_content = self.fetch_page_recursively(
+                    child_page_id, child_company_name
+                )
                 child_pages.extend(child_content)
 
             time.sleep(0.2)
@@ -70,10 +75,13 @@ class NotionParser:
         }
 
         if company_name and current_page_id:
-            result[
-                "prompt_url"] = f"https://www.notion.so/{company_name.replace(' ', '-').lower()}-{current_page_id.replace('-', '')}"
+            result["prompt_url"] = (
+                f"https://www.notion.so/{company_name.replace(' ', '-').lower()}-{current_page_id.replace('-', '')}"
+            )
         else:
-            result["prompt_url"] = f"https://www.notion.so/{self.root_page_id.replace('-', '')}"
+            result["prompt_url"] = (
+                f"https://www.notion.so/{self.root_page_id.replace('-', '')}"
+            )
 
         return [result] + child_pages
 
@@ -86,9 +94,8 @@ class NotionParser:
         if not blocks:
             return []
 
-        parsed_data = self.parse_blocks(blocks, company_name, page_id if company_name else None)
+        parsed_data = self.parse_blocks(
+            blocks, company_name, page_id if company_name else None
+        )
 
         return parsed_data
-
-
-
