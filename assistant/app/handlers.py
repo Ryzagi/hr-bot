@@ -36,7 +36,7 @@ async def ask(user_id: str, user_text: str, bot=None):
             response_json = await response.json()
             print(response_json)
             if bot and response_json.get("user_info"):
-                response_json["user_info"]["messagenger"] = "telegram"
+                response_json["user_info"]["messenger"] = "telegram"
                 await send_user_info(bot, response_json["user_info"])
             return response_json
 
