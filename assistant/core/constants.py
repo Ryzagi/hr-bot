@@ -142,6 +142,8 @@ CREATE_USER_ENDPOINT = "/api/v1/hr-bot/create_user"
 
 ASK_ENDPOINT = "/api/v1/hr-bot/ask"
 
+GET_CONVERSATIONS_ENDPOINT = "/api/v1/hr-bot/get_conversations"
+
 WAZZAP_ENDPOINT = "/wazzup-webhook"
 
 CONVERSATIONS_DIRECTORY = Path(__file__).parent.parent.parent / "database" / "saved_conversations"

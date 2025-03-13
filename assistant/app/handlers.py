@@ -1,6 +1,7 @@
 import asyncio
 import aiohttp
-from assistant.core.constants import CREATE_USER_ENDPOINT, ASK_ENDPOINT, NETWORK, SUMMARY_PARAMS
+from assistant.core.constants import CREATE_USER_ENDPOINT, ASK_ENDPOINT, NETWORK, SUMMARY_PARAMS, \
+    GET_CONVERSATIONS_ENDPOINT
 from assistant.config import HR_CHAT_ID
 
 
@@ -37,3 +38,13 @@ async def ask(user_id: str, user_text: str, bot=None):
 async def send_user_info(bot, user_info: dict):
     message_text = SUMMARY_PARAMS["summary_message"].format(**user_info)
     await bot.send_message(HR_CHAT_ID, text=message_text)
+
+
+async def get_conversations():
+    async with aiohttp.ClientSession() as session:
+        async with session.get(
+                f"http://{NETWORK}:9000{GET_CONVERSATIONS_ENDPOINT}"
+        ) as response:
+            if response.status != 200:
+                raise Exception(f"Failed to get conversations. Status code: {response.status}")
+            return await response.json()

@@ -39,7 +39,8 @@ class SupabaseService:
         try:
             for user_id, conversation in conversations.items():
                 print("User ID", user_id, "Conversation", conversation)
-                data_to_insert = {"user_id": user_id, "conversation": dumps(conversation, ensure_ascii=False, indent=4, pretty=True)}
+                data_to_insert = {"user_id": user_id,
+                                  "conversation": dumps(conversation, ensure_ascii=False, indent=4, pretty=True)}
                 print("Data to insert", data_to_insert)
                 # Insert the conversation into the "conversations" table in Supabase for each user ID
                 response = self.supabase_client.table(self._conversations_table).insert(data_to_insert).execute()
@@ -47,7 +48,6 @@ class SupabaseService:
             return {"message": "Conversations inserted successfully", "status_code": 200}
         except Exception as e:
             return {"message": "Failed to insert conversations", "status_code": str(e)}
-
 
     def load_conversations(self):
         # Load all conversations from the "conversations" table in Supabase

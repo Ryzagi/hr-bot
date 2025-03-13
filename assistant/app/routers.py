@@ -5,7 +5,10 @@ from aiogram.filters import CommandStart
 from aiogram.types import Message
 
 from assistant.core.constants import START_MESSAGE
-from assistant.app.handlers import create_user_tg, ask
+from assistant.app.handlers import create_user_tg, ask, get_conversations
+import json
+from aiogram.filters import Command
+from aiogram.types import FSInputFile
 
 router = Router()
 
@@ -68,3 +71,16 @@ async def handle_query_command(message: Message):
         await send_message(message, text)
     except Exception as e:
         print(f"Error asking question: {e}")
+
+
+@router.message(Command("load_conversations"))
+async def load_conversations(message: Message):
+    try:
+        conversations = await get_conversations()
+        # Create a JSON file with the conversations
+        with open("conversations.json", "w") as f:
+            json.dump(conversations, f, indent=4)
+        # Send the JSON file to the user
+        await message.answer_document(FSInputFile("conversations.json"))
+    except Exception as e:
+        await message.answer(f"Failed to load conversations: {e}")

@@ -189,6 +189,12 @@ def send_wazzup_message(user_id: str, message: str, channel_id: str):
         logger.error(f"Error while sending message: {e}")
 
 
+@app.get(GET_CONVERSATIONS_ENDPOINT)
+async def export_conversations():
+    conversations = SUPABASE_WRITER.load_conversations()
+    return conversations
+
+
 if __name__ == "__main__":
     import uvicorn
 
