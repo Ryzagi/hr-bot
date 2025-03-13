@@ -15,7 +15,7 @@ load_dotenv()
 
 
 class HRChatBot:
-    def __init__(self, api_key: str, model_name="gpt-4o", max_messages=10):
+    def __init__(self, api_key: str, model_name="gpt-4o-mini", max_messages=10):
         """
         Initialize the summarizing chatbot.
 
