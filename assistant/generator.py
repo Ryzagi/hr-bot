@@ -14,7 +14,7 @@ load_dotenv()
 
 
 class HRChatBot:
-    def __init__(self, model_name="gpt-4o-mini", max_messages=10):
+    def __init__(self, api_key: str, model_name="gpt-4o-mini", max_messages=10):
         """
         Initialize the summarizing chatbot.
 
@@ -22,8 +22,6 @@ class HRChatBot:
             model_name (str): The OpenAI model to use.
             max_messages (int): Number of messages before summarizing.
         """
-        # Chat model for answering and summarizing
-        api_key = os.getenv("OPENAI_API")
         self.model = ChatOpenAI(model=model_name, temperature=0, api_key=api_key).with_structured_output(
             ModelOutputResponseFormat)
 

@@ -11,7 +11,8 @@ from loguru import logger
 from starlette.requests import Request
 from assistant.app.handlers import send_user_info
 from assistant.app.data import AppState, UserInput
-from assistant.config import TELEGRAM_BOT_TOKEN
+from assistant.config import TELEGRAM_BOT_TOKEN, OPENAI_API_KEY, SUPABASE_URL, SUPABASE_KEY, NOTION_API_KEY, \
+    NOTION_ROOT_PAGE_ID
 from assistant.core.constants import CREATE_USER_ENDPOINT, ASK_ENDPOINT, START_MESSAGE, WAZZAP_ENDPOINT
 from assistant.generator import HRChatBot
 from assistant.database.supabase_service import SupabaseService
@@ -25,10 +26,10 @@ load_dotenv()
 
 telegram_bot = Bot(token=TELEGRAM_BOT_TOKEN)
 
-hr_bot = HRChatBot()
-SUPABASE_WRITER = SupabaseService(supabase_url=os.getenv("SUPABASE_URL"), supabase_key=os.getenv("SUPABASE_KEY"))
+hr_bot = HRChatBot(api_key=OPENAI_API_KEY)
+SUPABASE_WRITER = SupabaseService(supabase_url=SUPABASE_URL, supabase_key=SUPABASE_KEY)
 CONVERSATIONS = SUPABASE_WRITER.load_conversations()
-NOTION_SERVICE = NotionParser(api_key=os.getenv("NOTION_API_KEY"), page_id=os.getenv("NOTION_ROOT_PAGE_ID"))
+NOTION_SERVICE = NotionParser(api_key=NOTION_API_KEY, page_id=NOTION_ROOT_PAGE_ID)
 
 
 def register_wazzup_webhook():
@@ -155,6 +156,7 @@ async def wazzup_webhook(request: Request):
 
                 if user_info:
                     SUPABASE_WRITER.save_user_summary(user_id=user_id, summary=user_info)
+                    user_info["messenger"] = "whatsapp"
                     await send_user_info(telegram_bot, user_info)
 
         return {"status": "received"}
