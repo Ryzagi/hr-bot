@@ -64,6 +64,19 @@ async def send_message(message, text):
             await message.answer(text)  # Plain text fallback
 
 
+@router.message(Command("load_conversations"))
+async def load_conversations(message: Message):
+    try:
+        conversations = await get_conversations()
+        # Create a JSON file with the conversations
+        with open("conversations.json", "w", encoding="utf-8") as f:
+            json.dump(conversations, f, indent=4, ensure_ascii=False)
+        # Send the JSON file to the user
+        await message.answer_document(FSInputFile("conversations.json"))
+    except Exception as e:
+        await message.answer(f"Failed to load conversations: {e}")
+
+
 @router.message()
 async def handle_query_command(message: Message):
     user_id = str(message.from_user.id)
@@ -73,16 +86,3 @@ async def handle_query_command(message: Message):
         await send_message(message, text)
     except Exception as e:
         print(f"Error asking question: {e}")
-
-
-@router.message(Command("load_conversations"))
-async def load_conversations(message: Message):
-    try:
-        conversations = await get_conversations()
-        # Create a JSON file with the conversations
-        with open("conversations.json", "w") as f:
-            json.dump(conversations, f, indent=4)
-        # Send the JSON file to the user
-        await message.answer_document(FSInputFile("conversations.json"))
-    except Exception as e:
-        await message.answer(f"Failed to load conversations: {e}")
