@@ -15,7 +15,7 @@ from assistant.config import (NOTION_API_KEY, NOTION_ROOT_PAGE_ID,
                               OPENAI_API_KEY, SUPABASE_KEY, SUPABASE_URL,
                               TELEGRAM_BOT_TOKEN)
 from assistant.core.constants import (ASK_ENDPOINT, CREATE_USER_ENDPOINT,
-                                      START_MESSAGE, WAZZAP_ENDPOINT)
+                                      START_MESSAGE, WAZZAP_ENDPOINT, GET_CONVERSATIONS_ENDPOINT)
 from assistant.database.supabase_service import SupabaseService
 from assistant.generator import HRChatBot
 from assistant.notion_service import NotionParser
